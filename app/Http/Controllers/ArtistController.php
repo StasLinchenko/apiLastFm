@@ -15,7 +15,6 @@ class ArtistController extends Controller
         $url = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=$artistName&api_key=6b1db1cd2169ea35f5b9d1ed15925bb8&format=json";
 
         $data = json_decode(file_get_contents($url));
-        // dd($data);
 
         $artistName = $data->artist->name;
         $tags       = json_encode($data->artist->tags->tag);
@@ -23,16 +22,17 @@ class ArtistController extends Controller
         $plays      = $data->artist->stats->playcount;
 
         $artistData = Artist::firstOrCreate(
-            ['singerName' => $artistName],
-            ['singerName' => $artistName,
-            'tags' => $tags,
-            'listeners' => $listeners,
-            'plays' => $plays
+            ['artistName' => $artistName],
+            [
+                'artistName' => $artistName,
+                'tags' => $tags,
+                'listeners' => $listeners,
+                'plays' => $plays
             ],
 
         );
         $artistData->save();
 
-        return $artistData;
+        return response()->json($artistData);
     }
 }

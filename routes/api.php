@@ -19,3 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Route::get('/artist/{artistName}','App\Http\Controllers\ArtistController@getArtist');
+// Route::get('/artist/{artistName}/song/{songName}','App\Http\Controllers\SongController@getSong');
+// Route::get('/songs/{artistName}','App\Http\Controllers\SongController@getAllSongsByArtistName');
+// Route::get('/tags/{tagName}','App\Http\Controllers\SongController@getAllSongsByTag');
+// Route::get('/artist/{artistName}/album/{albumName}','App\Http\Controllers\AlbumController@getAlbum');

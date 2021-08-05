@@ -16,5 +16,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/artist/{artistName}','App\Http\Controllers\ArtistController@getArtist');
-Route::get('/artist/{artistName/{songName}','App\Http\Controllers\SonfController@getSong');
+Route::get('/artist/{artistName}', 'App\Http\Controllers\ArtistController@getArtist');
+Route::get('/artist/{artistName}/song/{songName}', 'App\Http\Controllers\SongController@getSong');
+Route::get('/artist/{artistName}/album/{albumName}', 'App\Http\Controllers\AlbumController@getAlbumSongs');
+
+Route::get('/songs/{artistName}', 'App\Http\Controllers\SongController@getAllSongsByArtistName');
+Route::get('/songs/{tagName}', 'App\Http\Controllers\SongController@getAllSongsByTag');
+
+Route::get('/chart/{condition}','App\Http\Controllers\ChartController@getChart');

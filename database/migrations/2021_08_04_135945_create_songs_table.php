@@ -17,6 +17,9 @@ class CreateSongsTable extends Migration
             $table->id();
             $table->string('songName');
             $table->string('artistName');
+            $table->json('tags');
+            $table->integer('plays');
+            $table->integer('listeners');
             $table->timestamps();
         });
     }
