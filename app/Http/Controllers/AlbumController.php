@@ -12,24 +12,45 @@ class AlbumController extends Controller
        $artistName = $request->artistName;
        $albumName = $request->albumName;
 
+       if(Album::where('artistName', '=', $artistName)
+            ->where('albumName', '=', $albumName)
+            ->exists()) {
+            $songData = Album::select('*')
+                            ->where('artistName', '=', $artistName)
+                            ->where('albumName', '=',$albumName)
+                            ->get();
+
+            return response()->json($songData);
+
+        }else{
+
        $url = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=6b1db1cd2169ea35f5b9d1ed15925bb8&artist=$artistName&album=$albumName&format=json";
 
        $data = json_decode(file_get_contents($url));
 
        $albumName  = $data->album->name;
+       $artistName  = $data->album->artist;
        $albumSongs = $data->album->tracks->track;
        $listeners  = $data->album->listeners;
        $plays      = $data->album->playcount;
-       //dd($data);
-       $albumSongsLenght = count($albumSongs);
 
+        if(is_countable($albumSongs)){
 
-        for($i = 0; $i < $albumSongsLenght; $i++){
-            $albumSongsName [] = $albumSongs[$i]->name;
+            $albumSongsLenght = count($albumSongs);
+
+            for($i = 0; $i < $albumSongsLenght; $i++){
+                $albumSongsName [] = $albumSongs[$i]->name;
+            }
+
+        }else{
+
+            $albumSongsName = $data->album->tracks->track->name;
+
         }
 
         $songData = Album::firstOrCreate(
             [
+                'artistName' => $artistName,
                 'albumName'  => $albumName,
             ],
             [
@@ -43,6 +64,7 @@ class AlbumController extends Controller
 
 
         return response()->json($songData);
+    }
    }
 }
 

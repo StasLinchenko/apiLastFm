@@ -10,6 +10,7 @@ class album extends Model
     protected $fillable = [
         'albumName',
         'albumSongs',
+        'artistName',
         'plays',
         'listeners'
     ];

@@ -10,37 +10,54 @@ class SongController extends Controller
 {
     public function getSong(Request $request)
     {
-        $songData = new Song;
         $artistName = $request->artistName;
         $songName   = $request->songName;
 
-        $url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=6b1db1cd2169ea35f5b9d1ed15925bb8&artist=$artistName&track=$songName&format=json";
+        $patten;
+        $replacement;
 
-        $data = json_decode(file_get_contents($url),JSON_UNESCAPED_UNICODE);
+        if(Song::where('artistName', '=', $artistName)
+               ->where('songName', '=', $songName)
+               ->exists()) {
+                dd('fromdb');
+               $songData = Song::select('*')
+                                ->where('artistName', '=', $artistName)
+                                ->where('songName', '=',$songName)
+                                ->get();
 
-         $songName     = $data->track->name;
-         $artistName   = $data->track->artist->name;
-         $tags         = json_encode($data->track->toptags->tag);
-         $listeners    = $data->track->listeners;
-         $plays        = $data->track->playcount;
+                return response()->json($songData);
 
-        $songData = Song::firstOrCreate(
-            [
-            'artistName' => $artistName,
-            'songName' => $songName,
-            ],
-            [
+        }else{
+            dd('fromAPI');
+            $url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=6b1db1cd2169ea35f5b9d1ed15925bb8&artist=$artistName&track=$songName&format=json";
+
+            $data = json_decode(file_get_contents($url));
+
+            $songName     = $data->track->name;
+            $artistName   = $data->track->artist->name;
+            $tags         = json_encode($data->track->toptags->tag);
+            $listeners    = $data->track->listeners;
+            $plays        = $data->track->playcount;
+
+            $songData = new Song;
+            $songData = Song::firstOrCreate(
+                [
                 'artistName' => $artistName,
                 'songName' => $songName,
-                'tags' => $tags,
-                'listeners' => $listeners,
-                'plays' => $plays,
-            ]
-        );
-        $songData->save();
+                ],
+                [
+                    'artistName' => $artistName,
+                    'songName' => $songName,
+                    'tags' => $tags,
+                    'listeners' => $listeners,
+                    'plays' => $plays,
+                ]
+            );
+            $songData->save();
 
-        return response()->json($songData);
+            return response()->json($songData);
 
+        }
     }
 
     public function getAllSongsByArtistName(Request $request){
@@ -62,6 +79,4 @@ class SongController extends Controller
 
         return response()->json($allSongs);
     }
-
-
 }

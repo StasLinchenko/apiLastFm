@@ -23,4 +23,4 @@ Route::get('/artist/{artistName}/album/{albumName}', 'App\Http\Controllers\Album
 Route::get('/songs/{artistName}', 'App\Http\Controllers\SongController@getAllSongsByArtistName');
 Route::get('/songs/{tagName}', 'App\Http\Controllers\SongController@getAllSongsByTag');
 
-Route::get('/chart/{condition}','App\Http\Controllers\ChartController@getChart');
+Route::get('/chart/{condition}/{stat}','App\Http\Controllers\ChartController@getChart');
