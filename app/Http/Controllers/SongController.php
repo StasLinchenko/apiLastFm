@@ -13,13 +13,9 @@ class SongController extends Controller
         $artistName = $request->artistName;
         $songName   = $request->songName;
 
-        $patten;
-        $replacement;
-
         if(Song::where('artistName', '=', $artistName)
                ->where('songName', '=', $songName)
                ->exists()) {
-                dd('fromdb');
                $songData = Song::select('*')
                                 ->where('artistName', '=', $artistName)
                                 ->where('songName', '=',$songName)
@@ -28,7 +24,6 @@ class SongController extends Controller
                 return response()->json($songData);
 
         }else{
-            dd('fromAPI');
             $url = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=6b1db1cd2169ea35f5b9d1ed15925bb8&artist=$artistName&track=$songName&format=json";
 
             $data = json_decode(file_get_contents($url));
